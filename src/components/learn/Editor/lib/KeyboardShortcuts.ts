@@ -67,7 +67,9 @@ export const KeyboardShortcuts = {
     },
     YOUTUBE: {
       isTrue: (keyEvent: KeyboardEvent) =>
-        keyEvent.code === 'KeyY' && keyEvent.shiftKey,
+        keyEvent.code === 'KeyY' &&
+        keyEvent.shiftKey &&
+        (keyEvent.ctrlKey || keyEvent.metaKey),
       left: ':::yt [',
       right: ']\nVideo caption\n:::',
     },
