@@ -121,19 +121,11 @@ export const KeyboardShortcuts = {
     textBox.value = preText + left + selectedText + right + postText
     setEditorState(textBox.value)
 
-    if (currentType === 'YOUTUBE') {
-      this.setSelected(
-        textBox,
-        left.length + selectionEnd,
-        left.length + selectionEnd
-      )
-    } else {
-      this.setSelected(
-        textBox,
-        selectionStart + left.length,
-        selectionEnd + left.length
-      )
-    }
+    this.setSelected(
+      textBox,
+      selectionStart + left.length,
+      selectionEnd + left.length
+    )
   },
   setSelected: function (
     item: HTMLTextAreaElement,
