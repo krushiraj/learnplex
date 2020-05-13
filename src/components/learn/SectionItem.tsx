@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Skeleton, Timeline, Typography } from 'antd'
-import { DownOutlined } from '@ant-design/icons'
-import { RightOutlined } from '@ant-design/icons/lib'
+import { DownOutlined, RightOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 
 import { Section } from '../../graphql/types'
@@ -11,12 +10,13 @@ import { useSections } from '../../lib/hooks/useSections'
 export default function SectionItem({
   sectionId,
   sectionsMap,
+  username,
 }: {
   sectionId: string
   sectionsMap: Map<string, Section>
+  username: string
 }) {
   const router = useRouter()
-  const username = router.query.username as string
   const resourceSlug = router.query.resource as string
   const currentSection = sectionsMap.get(sectionId)!
   const [isOpen, setOpen] = useState(false)
@@ -36,6 +36,21 @@ export default function SectionItem({
     setOpen(!isOpen)
   }
 
+  const goToResource = async () => {
+    const isPrimary = router.query.username !== username
+    if (isPrimary) {
+      await router.push(
+        `/learn/[resource]/[...slugs]?resource=${resourceSlug}&slugs=${slugs}`,
+        `/learn/${resourceSlug}/${slugsPath}`
+      )
+      return
+    }
+    await router.push(
+      `/[username]/learn/[resource]/[...slugs]?username=${username}&resource=${resourceSlug}&slugs=${slugs}`,
+      `/${username}/learn/${resourceSlug}/${slugsPath}`
+    )
+  }
+
   return (
     <Timeline.Item
       className={'font-large'}
@@ -52,12 +67,7 @@ export default function SectionItem({
           {!currentSection.hasSubSections ? (
             <span
               className={'cursor-pointer text-primary'}
-              onClick={() =>
-                router.push(
-                  `/[username]/learn/[resource]/[...slugs]?username=${username}&resource=${resourceSlug}&slugs=${slugs}`,
-                  `/${username}/learn/${resourceSlug}/${slugsPath}`
-                )
-              }
+              onClick={() => goToResource()}
             >
               {currentSection.title}
             </span>
@@ -70,6 +80,7 @@ export default function SectionItem({
         <SectionItems
           sections={currentSection.sections}
           sectionsMap={sectionsMap}
+          username={username}
         />
       )}
     </Timeline.Item>

@@ -1,9 +1,8 @@
 import React from 'react'
 import { useRouter } from 'next/router'
-import { Col, Row } from 'antd'
+import { Col, Row, Grid } from 'antd'
 
 import useSlugs from '../../lib/hooks/useSlugs'
-import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint'
 import { SEO } from '../SEO'
 import { upperCamelCase } from '../../utils/upperCamelCase'
 import { CONTENT_COL_LAYOUT, SIDEBAR_COL_LAYOUT } from '../../constants'
@@ -33,7 +32,7 @@ export default function ResourcePage({
     slugs,
   })
 
-  const { xs } = useBreakpoint()
+  const { xs } = Grid.useBreakpoint()
   const parentSectionId =
     sectionsMap.get(currentSectionId)?.parentSection?.id ?? ''
 
@@ -57,7 +56,7 @@ export default function ResourcePage({
               defaultSelectedKeys={[keys[keys.length - 1] as string]}
               defaultOpenKeys={keys}
               sectionsMap={sectionsMap}
-              inEditMode={false}
+              inEditMode={inEditMode}
               currentSections={currentSections}
               username={username}
             />

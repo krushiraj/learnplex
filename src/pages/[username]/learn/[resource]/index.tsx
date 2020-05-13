@@ -6,9 +6,7 @@ import { useQuery } from 'urql'
 import { useSections } from '../../../../lib/hooks/useSections'
 import { SEO } from '../../../../components/SEO'
 import { titleCase, upperCamelCase } from '../../../../utils/upperCamelCase'
-import { CONTENT_COL_LAYOUT, SIDEBAR_COL_LAYOUT } from '../../../../constants'
-import Sidebar from '../../../../components/learn/Sidebar'
-import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint'
+import { CONTENT_WITHOUT_SIDEBAR_COL_LAYOUT } from '../../../../constants'
 import ResourceIndex from '../../../../components/learn/ResourceIndex'
 
 export default function ViewResourceIndex() {
@@ -19,8 +17,6 @@ export default function ViewResourceIndex() {
     username,
     resourceSlug,
   })
-
-  const { xs } = useBreakpoint()
 
   const RESOURCE_QUERY = `
     query($username: String!, $resourceSlug: String!) {
@@ -52,19 +48,8 @@ export default function ViewResourceIndex() {
         body
       ) : (
         <Row>
-          <Col {...SIDEBAR_COL_LAYOUT}>
-            <Sidebar
-              defaultSelectedKeys={['resource-index'] as string[]}
-              defaultOpenKeys={[]}
-              sectionsMap={sectionsMap}
-              inEditMode={false}
-              currentSections={sectionsMap.get(baseSectionId)!.sections ?? []}
-              username={username}
-            />
-          </Col>
-
-          <Col className={`${xs ? '' : 'px-5'}`} {...CONTENT_COL_LAYOUT}>
-            <Typography className={'text-center pb-1 pt-2'}>
+          <Col {...CONTENT_WITHOUT_SIDEBAR_COL_LAYOUT}>
+            <Typography className={'pb-1 pt-2 pl-5'}>
               <Typography.Title level={2}>
                 {titleCase(resourceSlug)}
               </Typography.Title>
@@ -76,6 +61,7 @@ export default function ViewResourceIndex() {
             <ResourceIndex
               baseSectionId={baseSectionId}
               sectionsMap={sectionsMap}
+              username={username}
             />
           </Col>
         </Row>

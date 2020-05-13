@@ -1,10 +1,8 @@
-import Head from 'next/head'
 import React from 'react'
-import { Layout } from 'antd'
+import { Layout, Grid } from 'antd'
 import { createClient } from '@urql/core'
 import urljoin from 'url-join'
 import { Provider } from 'urql'
-import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint'
 
 import { getServerEndPoint } from '../../../utils/getServerEndPoint'
 import Header from './Header'
@@ -19,12 +17,9 @@ export default function SiteLayout({ children }: { children: any }) {
       }
     },
   })
-  const { xs } = useBreakpoint()
+  const { xs } = Grid.useBreakpoint()
   return (
     <>
-      <Head>
-        <meta charSet="utf-8" />
-      </Head>
       <Layout className={'mh-100vh'}>
         <Layout.Header className={'mb-3'}>
           {/* TODO: Without Provider, useEffect is not running in useUser hook, figure out why */}

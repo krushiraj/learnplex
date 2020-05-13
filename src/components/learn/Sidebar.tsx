@@ -1,4 +1,4 @@
-import { Menu, Button, Skeleton, Typography } from 'antd'
+import { Menu, Skeleton, Typography, Grid, Breadcrumb } from 'antd'
 import React, { useState } from 'react'
 import {
   FileTextOutlined,
@@ -11,11 +11,11 @@ import {
   FileOutlined,
 } from '@ant-design/icons'
 import { useRouter } from 'next/router'
-import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint'
 
 import { Section } from '../../graphql/types'
 import useProgress from '../../lib/hooks/useProgress'
 import { useSections } from '../../lib/hooks/useSections'
+import { titleCase } from '../../utils/upperCamelCase'
 
 interface Props {
   inEditMode: boolean
@@ -46,7 +46,7 @@ export default function Sidebar({
     sectionsMap,
   })
 
-  const { xs } = useBreakpoint()
+  const { xs } = Grid.useBreakpoint()
 
   if (fetching) return <Skeleton active={true} />
 
@@ -147,7 +147,7 @@ export default function Sidebar({
   }
 
   const handleClick = async (e: any) => {
-    if (!router.pathname.startsWith('[username]') && !inEditMode) {
+    if (!router.pathname.startsWith('/[username]') && !inEditMode) {
       await handleClickPrimary(e)
       return
     }
@@ -158,13 +158,14 @@ export default function Sidebar({
           `/${username}/learn/edit/${resourceSlug}/resource-index`,
           { shallow: true }
         )
-      } else {
-        await router.push(
-          `/[username]/learn/[resource]?username=${username}&resource=${resourceSlug}`,
-          `/${username}/learn/${resourceSlug}`,
-          { shallow: true }
-        )
+        return
       }
+      await router.push(
+        `/[username]/learn/[resource]?username=${username}&resource=${resourceSlug}`,
+        `/${username}/learn/${resourceSlug}`,
+        { shallow: true }
+      )
+
       return
     }
     const slugs = getSlugsPathFromSectionId({ sectionId: e.key })
@@ -173,11 +174,12 @@ export default function Sidebar({
       slugsPath = slugs.reduce((a, b) => `${a}/${b}`)
     }
     if (inEditMode) {
-      return await router.push(
+      await router.push(
         `/[username]/learn/edit/[resource]/[...slugs]?username=${username}&resource=${resourceSlug}&slugs=${slugs}`,
         `/${username}/learn/edit/${resourceSlug}/${slugsPath}`,
         { shallow: true }
       )
+      return
     }
     await router.push(
       `/[username]/learn/[resource]/[...slugs]?username=${username}&resource=${resourceSlug}&slugs=${slugs}`,
@@ -186,6 +188,8 @@ export default function Sidebar({
     )
   }
   const sidebar = document.getElementById('sidebar')
+
+  const slugs = router.query.slugs ?? []
 
   return (
     <>
@@ -199,17 +203,28 @@ export default function Sidebar({
         id={'sidebar'}
         style={{ width: sidebar?.parentElement?.clientWidth ?? '24vw' }}
       >
-        <Menu.Item key={'resource-index'} className={'border-bottom'}>
-          <Typography>
-            <span className={'mr-3'}>
-              <FileTextOutlined />
-            </span>
+        <Menu.Item className={'cursor-initial'} disabled={true}>
+          <Breadcrumb>
+            {slugs.length >= 2 && (
+              <Breadcrumb.Item>
+                {titleCase(slugs[slugs.length - 2])}
+              </Breadcrumb.Item>
+            )}
+            {slugs.length >= 1 && (
+              <Breadcrumb.Item>
+                {titleCase(slugs[slugs.length - 1])}
+              </Breadcrumb.Item>
+            )}
+          </Breadcrumb>
+        </Menu.Item>
+        <Menu.Item
+          key={'resource-index'}
+          className={'border-bottom-2 font-weight-bold font-large'}
+        >
+          <Typography className={'text-center'}>
             <Typography.Text style={{ width: '75%' }} ellipsis={true}>
               {inEditMode ? 'Edit Index' : 'Index'}
             </Typography.Text>
-            <span className={'float-right'}>
-              <CheckCircleOutlined />
-            </span>
           </Typography>
         </Menu.Item>
 
