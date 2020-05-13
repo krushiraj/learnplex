@@ -71,7 +71,7 @@ export const KeyboardShortcuts = {
         keyEvent.shiftKey &&
         (keyEvent.ctrlKey || keyEvent.metaKey),
       left: ':::yt [',
-      right: ']\nVideo caption\n:::',
+      right: ']\n:::',
     },
   },
   getType: function (keyEvent: KeyboardEvent) {
@@ -124,8 +124,8 @@ export const KeyboardShortcuts = {
     if (currentType === 'YOUTUBE') {
       this.setSelected(
         textBox,
-        left.length + selectionEnd + 2,
-        left.length + selectionEnd + 15
+        left.length + selectionEnd,
+        left.length + selectionEnd
       )
     } else {
       this.setSelected(
